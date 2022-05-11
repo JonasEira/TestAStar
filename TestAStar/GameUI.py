@@ -15,6 +15,7 @@ class GameUI(object):
         pygame.init()
         self.screen = pygame.display.set_mode((800,600))
         
+        ## Read images
         self.red = pygame.image.load(os.path.join("red.png"))
         self.red.convert()
         self.green = pygame.image.load(os.path.join("green.png"))
@@ -23,8 +24,21 @@ class GameUI(object):
         self.blue.convert()
         self.man = pygame.image.load(os.path.join("man.png"))
         self.man.convert()
-        running = True;
-        
+
+        ##Get constraints and size relations
+        self.rectangle = [width, height] = pygame.display.get_surface().get_size()
+        self.bSize = height / len(self.models['testAStar'].getDataPoints()[0]);
+
+        ## Change size of images
+        self.convFactor = 250.0/self.bSize;
+        self.x_Factor = self.rectangle[0]*self.convFactor;
+        self.y_Factor = self.rectangle[1]*self.convFactor;
+        pygame.transform.scale(self.red, (int(self.x_Factor), int(self.y_Factor)))
+        pygame.transform.scale(self.green, (int(self.x_Factor), int(self.y_Factor)))
+        pygame.transform.scale(self.blue, (int(self.x_Factor), int(self.y_Factor)))
+        pygame.transform.scale(self.man, (int(self.x_Factor), int(self.y_Factor)))
+
+        running = True;        
         while running:
             
             self.update();
@@ -66,7 +80,7 @@ class GameUI(object):
                     if event.key == pygame.K_ESCAPE:
                         model.setRunning(False);
                         running = False;
-        time.sleep(0.009)
+        time.sleep(0.2)
 
     
     #def drawNodesToGoal(self):
@@ -82,32 +96,29 @@ class GameUI(object):
     def drawGameSurface(self):
         row = 0;
         column = 0;
-        [width, height] = pygame.display.get_surface().get_size()
-        bSize = height / len(self.models['testAStar'].getDataPoints()[0]);
         for dataPointRow in self.models['testAStar'].getDataPoints():
             for dataPoint in dataPointRow:
                 column = column + 1;
                 if(dataPoint == 'X'):
                     #self.drawRect(bSize*column, bSize*row, bSize, bSize, 255, 0, 0);
-                    self.screen.blit(self.red, (bSize*column, bSize*row))
+                    self.screen.blit(self.red, (self.bSize*column, self.bSize*row))
+
                 if(dataPoint == 'S'):
                     #self.drawRect(bSize*column, bSize*row, bSize, bSize, 255, 255, 255);
-                    self.screen.blit(self.green, (bSize*column, bSize*row))
+                    self.screen.blit(self.green, (self.bSize*column, self.bSize*row))
                 if(dataPoint == 'G'):
                     #self.drawRect(bSize*column, bSize*row, bSize, bSize, 255, 0, 255);
-                    self.screen.blit(self.blue, (bSize*column, bSize*row))
+                    self.screen.blit(self.blue, (self.bSize*column, self.bSize*row))
             column = 0;
             row = row + 1;
 
     def drawPassedNodes(self):
-        [width, height] = pygame.display.get_surface().get_size()
-        bSize = height / len(self.models['testAStar'].getDataPoints()[0]);
         passedNodes = self.models['testAStar'].getPassedNodes();
         for dataPoint in passedNodes:
             #self.drawRect(bSize*dataPoint[0][0]+1, bSize*dataPoint[0][1]+1, bSize, bSize, colorInt, colorInt, colorInt);
             if dataPoint == 0:
                 return
-            self.screen.blit( self.man, ( bSize*(dataPoint[0][0]+1), bSize*(dataPoint[0][1]) ) )
+            self.screen.blit( self.man, ( self.bSize*(dataPoint[0][0]+1), self.bSize*(dataPoint[0][1]) ) )
             
             
             

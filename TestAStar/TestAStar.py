@@ -1,6 +1,7 @@
 
 import numpy as np;
 import math, time;
+import testgenerator;
 class TestAStar():
 
 	def __init__(self, callback):
@@ -182,7 +183,7 @@ class TestAStar():
 			testing = 0;
 			self.passedNodes.append(currentNode);
 			while(len(self.passedNodes) < totalLength and self.running):
-				if(currentNode == self.endPoint):
+				if(currentNode[0] == self.endPoint):
 					#return fullPath(passedNodes, currentNode);
 					print('FOUND IT!');
 					return;
